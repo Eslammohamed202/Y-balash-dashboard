@@ -14,45 +14,43 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-useEffect(() => {
-  const fetchData = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const [stockRes, catRes, activityRes] = await Promise.all([
-        axios.get(`https://y-balash.vercel.app/api/admin/low-stock-items?threshold=${threshold}`),
-        axios.get("https://y-balash.vercel.app/api/admin/top-categories"),
-        axios.get("https://y-balash.vercel.app/api/admin/recent-activities"),
-      ]);
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const [stockRes, catRes, activityRes] = await Promise.all([
+          axios.get(`https://y-balash.vercel.app/api/admin/low-stock-items?threshold=${threshold}`),
+          axios.get("https://y-balash.vercel.app/api/admin/top-categories"),
+          axios.get("https://y-balash.vercel.app/api/admin/recent-activities"),
+        ]);
 
-      // 🟢 حذف الفلترة – خلي الباكيند يفلتر
-      const convertedItems = (stockRes.data.items || []).map(item => ({
-        ...item,
-        remainingQuantity: parseInt(item.remainingQuantity, 10),
-      }));
+        const convertedItems = (stockRes.data.items || []).map(item => ({
+          ...item,
+          remainingQuantity: parseInt(item.remainingQuantity, 10),
+        }));
 
-      console.log("Low Stock Items from API:", convertedItems);
-      setLowStockItems(convertedItems);
-      setTopCategories(catRes.data?.topCategories || []);
-      setRecentActivities(activityRes.data?.activities || []);
-    } catch (err) {
-      console.error("Error fetching data:", err);
-      setError("Failed to fetch data. Please try again.");
-      setLowStockItems([]);
-      setTopCategories([]);
-      setRecentActivities([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+        console.log("Low Stock Items from API:", convertedItems);
+        setLowStockItems(convertedItems);
+        setTopCategories(catRes.data?.topCategories || []);
+        setRecentActivities(activityRes.data?.activities || []);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError("Failed to fetch data. Please try again.");
+        setLowStockItems([]);
+        setTopCategories([]);
+        setRecentActivities([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  fetchData();
-}, [threshold]);
-
+    fetchData();
+  }, [threshold]);
 
   const handleThresholdChange = (e) => {
     const value = parseInt(e.target.value);
-    if (!isNaN(value) && value > 0) {
+    if (!isNaN(value)) {
       setThreshold(value);
     }
   };
@@ -102,14 +100,16 @@ useEffect(() => {
                 <label htmlFor="threshold" className="text-sm mr-2">
                   Threshold:
                 </label>
-                <input
-                  type="number"
+                <select
                   id="threshold"
-                  min="1"
                   value={threshold}
                   onChange={handleThresholdChange}
-                  className="w-16 p-1 border rounded text-sm"
-                />
+                  className="p-1 border rounded text-sm"
+                >
+                  {[10, 15, 20, 25, 30, 35, 40, 45, 50].map((val) => (
+                    <option key={val} value={val}>{val}</option>
+                  ))}
+                </select>
               </div>
             </div>
 
@@ -184,3 +184,4 @@ useEffect(() => {
     </div>
   );
 }
+
