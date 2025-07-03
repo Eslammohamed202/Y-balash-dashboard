@@ -8,7 +8,7 @@ import { MdJoinLeft } from "react-icons/md";
 import { HiMenuAlt3 } from "react-icons/hi"; 
 import { IoClose } from "react-icons/io5"; 
 import { FaShoppingCart } from "react-icons/fa";
-
+import { IoAddCircleSharp } from "react-icons/io5";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false); 
@@ -22,7 +22,7 @@ export default function Sidebar() {
     { name: "Analytics", path: "/analytics", icon: <IoAnalyticsOutline  size={20} /> },
     { name: "Join Requests", path: "/join requests", icon: <MdJoinLeft  size={20} /> },
     { name: "Approve Seller", path: "/approve seller", icon: <FaUserCheck  size={20} /> },
-    { name: "Add Resturant", path: "/add resturant", icon: <FaUserCheck  size={20} /> },
+    { name: "Add Resturant", path: "/add resturant", icon: <IoAddCircleSharp size={20} /> },
   ];
 
   const toggleSidebar = () => {

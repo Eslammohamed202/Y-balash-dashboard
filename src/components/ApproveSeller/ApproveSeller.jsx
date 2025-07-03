@@ -29,6 +29,7 @@ const ApproveSeller = () => {
     setError(null);
 
     try {
+      // const res = await axios.post('https://y-balash.vercel.app/api/admin/approve-seller', formData);
       const res = await axios.post('https://y-balash.vercel.app/api/admin/approve-seller', formData);
       if (res.data.success) {
         setMessage(res.data.message);

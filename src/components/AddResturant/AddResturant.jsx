@@ -79,6 +79,7 @@ const AddResturant = () => {
 
   useEffect(() => {
     axios
+      // .get('https://y-balash.vercel.app/api/restaurants/all', {
       .get('https://y-balash.vercel.app/api/restaurants/all', {
         headers: {
           Authorization: token,

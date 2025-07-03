@@ -19,12 +19,15 @@ export default function SellerDetailsPage() {
     const fetchData = async () => {
       try {
         const [sellerRes, productsRes, statsRes] = await Promise.all([
+          // axios.get('https://y-balash.vercel.app/api/admin/sellers/6817f592ca31750074afbfb1', {
           axios.get('https://y-balash.vercel.app/api/admin/sellers/6817f592ca31750074afbfb1', {
             headers: { Authorization: TOKEN },
           }),
+          // axios.get('https://y-balash.vercel.app/api/admin/seller/6768012ae385ce96f5a00a65/products', {
           axios.get('https://y-balash.vercel.app/api/admin/seller/6768012ae385ce96f5a00a65/products', {
             headers: { Authorization: TOKEN },
           }),
+          // axios.get('https://y-balash.vercel.app/api/admin/total-earnings', {
           axios.get('https://y-balash.vercel.app/api/admin/total-earnings', {
             headers: { Authorization: TOKEN },
           }),

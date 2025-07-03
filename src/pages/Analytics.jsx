@@ -14,8 +14,11 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       const [stockRes, catRes, activityRes] = await Promise.all([
+        // axios.get("https://y-balash.vercel.app/api/admin/low-stock-items?threshold=5"),
         axios.get("https://y-balash.vercel.app/api/admin/low-stock-items?threshold=5"),
-        axios.get("https://y-balash.vercel.app/api/admin/top-categories"),
+        // axios.get("https://y-balash.vercel.app/api/admin/top-categories"),
+        axios.get("https://y-balash.vercel.app/admin/top-categories"),
+        // axios.get("https://y-balash.vercel.app/api/admin/recent-activities"),
         axios.get("https://y-balash.vercel.app/api/admin/recent-activities"),
       ]);
 
@@ -47,7 +50,7 @@ export default function AdminDashboard() {
           <div className="bg-white p-6 rounded shadow">
             <h2 className="text-xl font-semibold mb-4">Top Categories</h2>
             <div className="space-y-4">
-              {topCategories.map((cat, idx) => (
+              {topCategories?.map((cat, idx) => (
                 <div
                   key={idx}
                   className="flex items-center justify-between p-3 bg-gray-50 rounded shadow-sm"
@@ -59,11 +62,10 @@ export default function AdminDashboard() {
                     </p>
                   </div>
                   <p
-                    className={`text-sm font-semibold ${
-                      cat.changeDirection === "increase"
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }`}
+                    className={`text-sm font-semibold ${cat.changeDirection === "increase"
+                      ? "text-green-600"
+                      : "text-red-600"
+                      }`}
                   >
                     {cat.changeDirection === "increase" ? "+" : "-"}
                     {cat.percentageChange}

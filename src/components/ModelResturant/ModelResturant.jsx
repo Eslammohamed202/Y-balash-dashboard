@@ -41,6 +41,7 @@ const ModelResturant = () => {
     formData.append('image', image);
 
     try {
+      // const res = await fetch('https://y-balash.vercel.app/api/restaurants/add', {
       const res = await fetch('https://y-balash.vercel.app/api/restaurants/add', {
         method: 'POST',
         headers: {

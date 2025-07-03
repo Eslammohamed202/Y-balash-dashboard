@@ -75,7 +75,7 @@
 //       change: "0.7%",
 //     },
 //   ];
-  
+
 //   // عرض حالة التحميل
 //   if (isLoading) {
 //     return (
@@ -118,7 +118,7 @@
 //       </div>
 //     </div>
 //     </div>
-   
+
 //   );
 // }
 
@@ -196,7 +196,9 @@ const DashboardStats = () => {
     setPeriod(period);
     const url =
       period === "30days"
+        // ? "https://y-balash.vercel.app/api/admin/revenue-30days"
         ? "https://y-balash.vercel.app/api/admin/revenue-30days"
+        // : "https://y-balash.vercel.app/api/admin/revenue-12months";
         : "https://y-balash.vercel.app/api/admin/revenue-12months";
     const data = await fetchStats(url);
 
@@ -213,12 +215,19 @@ const DashboardStats = () => {
   };
 
   useEffect(() => {
+    // fetchStats("https://y-balash.vercel.app/api/admin/users-stats").then(setUsers);
     fetchStats("https://y-balash.vercel.app/api/admin/users-stats").then(setUsers);
+    // fetchStats("https://y-balash.vercel.app/api/admin/sellers-stats").then(setSellers);
     fetchStats("https://y-balash.vercel.app/api/admin/sellers-stats").then(setSellers);
+    // fetchStats("https://y-balash.vercel.app/api/admin/orders-stats").then(setOrders);
     fetchStats("https://y-balash.vercel.app/api/admin/orders-stats").then(setOrders);
+    // fetchStats("https://y-balash.vercel.app/api/admin/revenue-stats").then(setRevenue);
     fetchStats("https://y-balash.vercel.app/api/admin/revenue-stats").then(setRevenue);
+    // fetchStats("https://y-balash.vercel.app/api/admin/welcome").then(setWelcomeData);
     fetchStats("https://y-balash.vercel.app/api/admin/welcome").then(setWelcomeData);
+    // fetchStats("https://y-balash.vercel.app/api/admin/alerts").then((data) => setAlerts(data.alerts));
     fetchStats("https://y-balash.vercel.app/api/admin/alerts").then((data) => setAlerts(data.alerts));
+    // fetchStats("https://y-balash.vercel.app/api/admin/top-categories").then((data) => setCategories(data.topCategories));
     fetchStats("https://y-balash.vercel.app/api/admin/top-categories").then((data) => setCategories(data.topCategories));
     fetchRevenueData("30days");
   }, []);
@@ -359,7 +368,7 @@ const DashboardStats = () => {
 
             <div className="flex-1 space-y-2">
               <h2 className="font-semibold text-lg mb-2">Top Categories</h2>
-              {categories.map((cat, idx) => (
+              {categories?.map((cat, idx) => (
                 <div key={cat._id} className="flex items-center justify-between px-2 py-2">
                   <div className="flex items-center gap-2">
                     <span className="text-2xl">

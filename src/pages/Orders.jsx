@@ -63,6 +63,7 @@ const ProductOrderManagement = () => {
     const fetchOrders = async () => {
       try {
         const response = await axios.get(
+          // 'https://y-balash.vercel.app/api/admin/orders/all',
           'https://y-balash.vercel.app/api/admin/orders/all',
           {
             headers: {
@@ -130,22 +131,22 @@ const ProductOrderManagement = () => {
                 />
               </svg>
             </div>
-    <div className="flex items-center border py-2 px-4 rounded">
-      <span className="text-sm mr-2 ">All Products</span>
-      <svg
-        className="h-4 w-4 text-gray-400"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-      >
-        <path
-          fillRule="evenodd"
-          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-          clipRule="evenodd"
-        />
-      </svg>
-    </div>
-  </div>
+            <div className="flex items-center border py-2 px-4 rounded">
+              <span className="text-sm mr-2 ">All Products</span>
+              <svg
+                className="h-4 w-4 text-gray-400"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+          </div>
         </div>
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="grid grid-cols-7 gap-4 bg-[#E5E7EB] p-2 font-poppins font-medium text-[#6B7280] text-[12px] ">
@@ -157,7 +158,7 @@ const ProductOrderManagement = () => {
             <div>Status</div>
             <div>Actions</div>
           </div>
-          
+
           {/* Sample Product Row - Static as in the image */}
           <div className="grid grid-cols-7 gap-4 p-4 border-b">
             <div className="font-medium text-[#111827] text-[14px] font-poppins ">Cheese Cake</div>
@@ -168,7 +169,7 @@ const ProductOrderManagement = () => {
             <div>45</div>
             <div className="text-[#065F46] bg-[#D1FAE5] ">Active</div>
           </div>
-          
+
           <div className="flex justify-between items-center p-4 text-sm text-gray-600">
             <div>Showing 1 to 10 of 97 results</div>
             <div className="flex space-x-2">
@@ -206,22 +207,22 @@ const ProductOrderManagement = () => {
                 />
               </svg>
             </div>
-           <div className="flex items-center border py-2 px-4 rounded">
-            <span className="text-sm mr-2 ">All Products</span>
-            <svg
-              className="h-4 w-4 text-gray-400"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <div className="flex items-center border py-2 px-4 rounded">
+              <span className="text-sm mr-2 ">All Products</span>
+              <svg
+                className="h-4 w-4 text-gray-400"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
           </div>
-        </div>
         </div>
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="grid grid-cols-7 gap-4 bg-[#E5E7EB] p-2 font-poppins font-medium text-[#6B7280] text-[12px]">
@@ -233,7 +234,7 @@ const ProductOrderManagement = () => {
             <div>Status</div>
             <div>Actions</div>
           </div>
-          
+
           {/* Orders from API */}
           {currentOrders.map((order) => (
             <div key={order.orderId} className="grid grid-cols-7 gap-4 p-4 border-b">
@@ -246,10 +247,9 @@ const ProductOrderManagement = () => {
               <div>{order.restaurantName}</div>
               <div>{order.date}</div>
               <div>{order.totalAmount}</div>
-              <div className={`${
-                order.status === 'confirmed' ? 'text-green-500' : 
+              <div className={`${order.status === 'confirmed' ? 'text-green-500' :
                 order.status === 'pending' ? 'text-yellow-500' : 'text-blue-500'
-              }`}>
+                }`}>
                 {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
               </div>
               <div>
@@ -257,18 +257,18 @@ const ProductOrderManagement = () => {
               </div>
             </div>
           ))}
-          
+
           <div className="flex justify-between items-center p-4 text-sm text-gray-600">
             <div>Showing {indexOfFirstOrder + 1} to {Math.min(indexOfLastOrder, orders.length)} of {orders.length} results</div>
             <div className="flex space-x-2">
-              <button 
-                onClick={() => paginate(currentPage - 1)} 
+              <button
+                onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
                 className={`px-3 py-1 border rounded ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 Previous
               </button>
-              
+
               {Array.from({ length: Math.min(3, totalPages) }, (_, i) => {
                 const pageNumber = i + 1;
                 return (
@@ -281,13 +281,13 @@ const ProductOrderManagement = () => {
                   </button>
                 );
               })}
-              
+
               {totalPages > 3 && (
                 <span className="px-3 py-1">...</span>
               )}
-              
-              <button 
-                onClick={() => paginate(currentPage + 1)} 
+
+              <button
+                onClick={() => paginate(currentPage + 1)}
                 disabled={currentPage === totalPages}
                 className={`px-3 py-1 border rounded ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}`}
               >

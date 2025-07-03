@@ -13,6 +13,7 @@ export const ProductProvider = ({ children }) => {
   // جلب المنتجات من API
   const fetchProducts = async () => {
     try {
+      // const res = await axios.get('https://y-balash.vercel.app/api/seller/products-stats');
       const res = await axios.get('https://y-balash.vercel.app/api/seller/products-stats');
       const fetched = res.data.products || [];
       setProducts(fetched);

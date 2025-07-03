@@ -12,11 +12,13 @@ const SellerRequests = () => {
     const fetchSellers = async () => {
       try {
         const [approvedRes, rejectedRes] = await Promise.all([
+          // axios.get('https://y-balash.vercel.app/api/admin/approved-sellers', {
           axios.get('https://y-balash.vercel.app/api/admin/approved-sellers', {
             headers: {
               Authorization: TOKEN,
             },
           }),
+          // axios.get('https://y-balash.vercel.app/api/admin/rejected-sellers', {
           axios.get('https://y-balash.vercel.app/api/admin/rejected-sellers', {
             headers: {
               Authorization: TOKEN,

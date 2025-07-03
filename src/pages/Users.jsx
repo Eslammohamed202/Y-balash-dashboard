@@ -17,10 +17,12 @@ export default function UserManagement() {
   const TOKEN = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MWE3YThhNWQyZTQzM2Y5OWY4NTdjNiIsImlhdCI6MTc1MDI0ODc2OSwiZXhwIjoxNzUyODQwNzY5fQ.Wa_3TfrRp1NK5r_eTRHbZwOSpyb_ronnSqD-b_tGues';
 
   useEffect(() => {
+    // axios.get('https://y-balash.vercel.app/api/admin/users', {
     axios.get('https://y-balash.vercel.app/api/admin/users', {
       headers: { Authorization: TOKEN },
     }).then((res) => setUsers(res.data.users)).catch(console.error);
 
+    // axios.get('https://y-balash.vercel.app/api/admin/sellers', {
     axios.get('https://y-balash.vercel.app/api/admin/sellers', {
       headers: { Authorization: TOKEN },
     }).then((res) => setSellers(res.data.sellers)).catch(console.error);
@@ -35,7 +37,7 @@ export default function UserManagement() {
     seller.email.toLowerCase().includes(search.toLowerCase()) &&
     (sellerFilter === 'active' ? seller.status === 'active' :
       sellerFilter === 'pending' ? seller.status === 'pending' :
-      sellerFilter === 'suspended' ? seller.status === 'suspended' : true)
+        sellerFilter === 'suspended' ? seller.status === 'suspended' : true)
   );
 
   return (

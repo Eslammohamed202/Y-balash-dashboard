@@ -344,6 +344,7 @@ const AddProductPage = () => {
     formData.append('restaurantId', restaurantId);
 
     try {
+      // const res = await fetch('https://y-balash.vercel.app/api/images/add', {
       const res = await fetch('https://y-balash.vercel.app/api/images/add', {
         method: 'POST',
         body: formData,
