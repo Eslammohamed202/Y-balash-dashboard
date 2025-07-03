@@ -10,25 +10,52 @@ export default function AdminDashboard() {
   const [lowStockItems, setLowStockItems] = useState([]);
   const [topCategories, setTopCategories] = useState([]);
   const [recentActivities, setRecentActivities] = useState([]);
+  const [threshold, setThreshold] = useState(5);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
+useEffect(() => {
+  const fetchData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
       const [stockRes, catRes, activityRes] = await Promise.all([
-        // axios.get("https://y-balash.vercel.app/api/admin/low-stock-items?threshold=5"),
-        axios.get("https://y-balash.vercel.app/api/admin/low-stock-items?threshold=5"),
-        // axios.get("https://y-balash.vercel.app/api/admin/top-categories"),
-        axios.get("https://y-balash.vercel.app/admin/top-categories"),
-        // axios.get("https://y-balash.vercel.app/api/admin/recent-activities"),
+        axios.get(`https://y-balash.vercel.app/api/admin/low-stock-items?threshold=${threshold}`),
+        axios.get("https://y-balash.vercel.app/api/admin/top-categories"),
         axios.get("https://y-balash.vercel.app/api/admin/recent-activities"),
       ]);
 
-      setLowStockItems(stockRes.data.items.slice(0, 5));
-      setTopCategories(catRes.data.topCategories);
-      setRecentActivities(activityRes.data.activities);
-    };
+      // 🟢 حذف الفلترة – خلي الباكيند يفلتر
+      const convertedItems = (stockRes.data.items || []).map(item => ({
+        ...item,
+        remainingQuantity: parseInt(item.remainingQuantity, 10),
+      }));
 
-    fetchData();
-  }, []);
+      console.log("Low Stock Items from API:", convertedItems);
+      setLowStockItems(convertedItems);
+      setTopCategories(catRes.data?.topCategories || []);
+      setRecentActivities(activityRes.data?.activities || []);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      setError("Failed to fetch data. Please try again.");
+      setLowStockItems([]);
+      setTopCategories([]);
+      setRecentActivities([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, [threshold]);
+
+
+  const handleThresholdChange = (e) => {
+    const value = parseInt(e.target.value);
+    if (!isNaN(value) && value > 0) {
+      setThreshold(value);
+    }
+  };
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen space-y-6">
@@ -36,88 +63,123 @@ export default function AdminDashboard() {
         <div className="flex-1 space-y-6">
           <div className="bg-white p-6 rounded shadow">
             <h2 className="text-xl font-semibold mb-4">Orders Overview</h2>
-            <p>
-              <strong>Orders Today:</strong> 42
-            </p>
-            <p>
-              <strong>Orders This Week:</strong> 287
-            </p>
-            <p>
-              <strong>Orders This Month:</strong> 1156
-            </p>
+            <p><strong>Orders Today:</strong> 42</p>
+            <p><strong>Orders This Week:</strong> 287</p>
+            <p><strong>Orders This Month:</strong> 1156</p>
           </div>
 
           <div className="bg-white p-6 rounded shadow">
             <h2 className="text-xl font-semibold mb-4">Top Categories</h2>
-            <div className="space-y-4">
-              {topCategories?.map((cat, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded shadow-sm"
-                >
-                  <div>
-                    <p className="font-medium">{cat.name}</p>
-                    <p className="text-sm text-gray-500">
-                      {cat.productCount} products
-                    </p>
-                  </div>
-                  <p
-                    className={`text-sm font-semibold ${cat.changeDirection === "increase"
-                      ? "text-green-600"
-                      : "text-red-600"
-                      }`}
+            {topCategories.length > 0 ? (
+              <div className="space-y-4">
+                {topCategories.map((cat, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded shadow-sm"
                   >
-                    {cat.changeDirection === "increase" ? "+" : "-"}
-                    {cat.percentageChange}
-                  </p>
-                </div>
-              ))}
-            </div>
+                    <div>
+                      <p className="font-medium">{cat.name}</p>
+                      <p className="text-sm text-gray-500">
+                        {cat.productCount} products
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500">No category data available</p>
+            )}
           </div>
         </div>
 
         <div className="w-full md:w-1/3 space-y-6">
-          <div className="bg-white p-[1.5rem] rounded shadow">
-            <h2 className="text-xl font-semibold mb-[2rem] flex items-center justify-between">
-              Low Stock Alert <span className="text-yellow-600">⚠️</span>
-            </h2>
-            {lowStockItems.map((item, idx) => (
-              <div
-                key={idx}
-                className="flex justify-between text-sm border-b py-[1.5rem] "
-              >
-                <span>{item.name}</span>
-                <span className="text-red-600">{item.remainingQuantity}</span>
+          <div className="bg-white p-6 rounded shadow">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold flex items-center">
+                Low Stock Items <span className="text-yellow-600 ml-2">⚠️</span>
+              </h2>
+              <div className="flex items-center">
+                <label htmlFor="threshold" className="text-sm mr-2">
+                  Threshold:
+                </label>
+                <input
+                  type="number"
+                  id="threshold"
+                  min="1"
+                  value={threshold}
+                  onChange={handleThresholdChange}
+                  className="w-16 p-1 border rounded text-sm"
+                />
               </div>
-            ))}
+            </div>
+
+            {error ? (
+              <div className="text-red-500 text-center py-4">{error}</div>
+            ) : loading ? (
+              <div className="text-center py-4">Loading low stock items...</div>
+            ) : lowStockItems.length > 0 ? (
+              <div className="overflow-y-auto max-h-[500px]">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="text-left border-b">
+                      <th className="py-2">Product</th>
+                      <th>Category</th>
+                      <th className="text-right">Stock</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {lowStockItems.map((item, idx) => (
+                      <tr key={idx} className="border-b hover:bg-gray-50">
+                        <td className="py-3">{item.name}</td>
+                        <td>{item.category}</td>
+                        <td className="text-right text-red-600 font-medium">
+                          {item.remainingQuantity}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div className="mt-2 text-sm text-gray-500">
+                  Showing {lowStockItems.length} items below {threshold} in stock
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-4 text-gray-500">
+                No items found below {threshold} in stock
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       <div className="bg-white p-6 rounded shadow w-full">
         <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
-        <table className="w-full table-auto text-sm">
-          <thead>
-            <tr className="text-left border-b">
-              <th className="py-2">Action</th>
-              <th>User</th>
-              <th>Details</th>
-              <th>Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {recentActivities.map((activity, idx) => (
-              <tr key={idx} className="border-b hover:bg-gray-50">
-                <td className="py-2 font-semibold text-green-600">
-                  {activity.action}
-                </td>
-                <td>{activity.performedBy}</td>
-                <td>{activity.details}</td>
-                <td>{activity.time}</td>
+        {recentActivities.length > 0 ? (
+          <table className="w-full table-auto text-sm">
+            <thead>
+              <tr className="text-left border-b">
+                <th className="py-2">Action</th>
+                <th>User</th>
+                <th>Details</th>
+                <th>Time</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {recentActivities.map((activity, idx) => (
+                <tr key={idx} className="border-b hover:bg-gray-50">
+                  <td className="py-2 font-semibold text-green-600">
+                    {activity.action}
+                  </td>
+                  <td>{activity.performedBy}</td>
+                  <td>{activity.details}</td>
+                  <td>{activity.time}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p className="text-gray-500">No recent activities</p>
+        )}
       </div>
     </div>
   );

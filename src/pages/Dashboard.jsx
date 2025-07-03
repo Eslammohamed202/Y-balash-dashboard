@@ -379,11 +379,11 @@ const DashboardStats = () => {
                       <p className="text-[14px] text-[#6B7280] font-medium">{cat.productCount} products</p>
                     </div>
                   </div>
-                  <p
+                  {/* <p
                     className={`font-semibold ${cat.changeDirection === "increase" ? "text-green-500" : "text-red-500"}`}
                   >
                     {cat.changeDirection === "increase" ? "+" : "-"}{cat.percentageChange}
-                  </p>
+                  </p> */}
                 </div>
               ))}
             </div>

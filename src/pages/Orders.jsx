@@ -56,14 +56,16 @@ import { Link } from 'react-router-dom';
 
 const ProductOrderManagement = () => {
   const [orders, setOrders] = useState([]);
+  const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentProductsPage, setCurrentProductsPage] = useState(1);
   const ordersPerPage = 10;
+  const productsPerPage = 10;
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const response = await axios.get(
-          // 'https://y-balash.vercel.app/api/admin/orders/all',
           'https://y-balash.vercel.app/api/admin/orders/all',
           {
             headers: {
@@ -77,28 +79,43 @@ const ProductOrderManagement = () => {
       }
     };
 
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('https://y-balash.vercel.app/api/images/all');
+        setProducts(response.data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
     fetchOrders();
+    fetchProducts();
   }, []);
 
-  // Pagination logic
+  // Orders pagination
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
   const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
-  const totalPages = Math.ceil(orders.length / ordersPerPage);
+  const totalOrderPages = Math.ceil(orders.length / ordersPerPage);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  // Products pagination
+  const indexOfLastProduct = currentProductsPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+  const totalProductPages = Math.ceil(products.length / productsPerPage);
+
+  const paginateOrders = (pageNumber) => setCurrentPage(pageNumber);
+  const paginateProducts = (pageNumber) => setCurrentProductsPage(pageNumber);
 
   return (
-    <div className="container mx-auto px-4 py-8 ">
+    <div className="container mx-auto px-4 py-8">
       <div className="bg-white p-4">
         <div className="flex justify-between items-center mb-6">
-          {/* النصوص على اليسار */}
           <div>
             <h1 className="text-[24px] text-[#1C573E] font-poppins font-semibold">Product & Order Management</h1>
-            <p className="text-[#6B7280] text-[14px] font-poppins font-medium ">Manage platform products and track orders</p>
+            <p className="text-[#6B7280] text-[14px] font-poppins font-medium">Manage platform products and track orders</p>
           </div>
 
-          {/* زر "Add Product" على اليمين */}
           <Link to="/add-product">
             <button className="bg-[#1C573E] text-white px-4 py-2 rounded-md transition-colors">
               + Add Product
@@ -110,7 +127,7 @@ const ProductOrderManagement = () => {
       {/* Products Section */}
       <div className="mb-12">
         <div className="flex justify-between items-center mt-10 bg-[#fff] p-4">
-          <h2 className="text-xl font-semibold font-poppins text-[20px] text-[#111827] ">Products</h2>
+          <h2 className="text-xl font-semibold font-poppins text-[20px] text-[#111827]">Products</h2>
           <div className="flex items-center gap-4">
             <div className="relative">
               <input
@@ -132,7 +149,7 @@ const ProductOrderManagement = () => {
               </svg>
             </div>
             <div className="flex items-center border py-2 px-4 rounded">
-              <span className="text-sm mr-2 ">All Products</span>
+              <span className="text-sm mr-2">All Products</span>
               <svg
                 className="h-4 w-4 text-gray-400"
                 xmlns="http://www.w3.org/2000/svg"
@@ -149,35 +166,72 @@ const ProductOrderManagement = () => {
           </div>
         </div>
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="grid grid-cols-7 gap-4 bg-[#E5E7EB] p-2 font-poppins font-medium text-[#6B7280] text-[12px] ">
+          <div className="grid grid-cols-7 gap-4 bg-[#E5E7EB] p-2 font-poppins font-medium text-[#6B7280] text-[12px]">
             <div>Product</div>
+            <div>SKU</div>
             <div>Seller</div>
             <div>Category</div>
             <div>Price</div>
             <div>Stock</div>
             <div>Status</div>
-            <div>Actions</div>
           </div>
 
-          {/* Sample Product Row - Static as in the image */}
-          <div className="grid grid-cols-7 gap-4 p-4 border-b">
-            <div className="font-medium text-[#111827] text-[14px] font-poppins ">Cheese Cake</div>
-            <div className="text-gray-500">#PRO001</div>
-            <div>Frio</div>
-            <div>Desserts</div>
-            <div>70 EGP</div>
-            <div>45</div>
-            <div className="text-[#065F46] bg-[#D1FAE5] ">Active</div>
-          </div>
+          {/* Products from API */}
+          {currentProducts.map((product) => (
+            <div key={product._id} className="grid grid-cols-7 gap-4 p-4 border-b items-center">
+              <div className="flex items-center">
+                <img src={product.imageUrl} alt={product.name} className="w-10 h-10 object-cover rounded mr-2" />
+                <span className="font-medium text-[#111827] text-[14px] font-poppins">{product.name}</span>
+              </div>
+              <div className="text-gray-500">{product.sku}</div>
+              <div>{product.restaurant?.name || 'N/A'}</div>
+              <div>{product.category?.name || 'N/A'}</div>
+              <div>
+                <span className="text-gray-500 line-through mr-1">{product.originalPrice} EGP</span>
+                <span className="font-medium">{product.discountedPrice} EGP</span>
+              </div>
+              <div>{product.quantity}</div>
+              <div className="text-[#065F46] bg-[#D1FAE5] px-2 py-1 rounded text-center">Active</div>
+            </div>
+          ))}
 
           <div className="flex justify-between items-center p-4 text-sm text-gray-600">
-            <div>Showing 1 to 10 of 97 results</div>
+            <div>
+              Showing {indexOfFirstProduct + 1} to {Math.min(indexOfLastProduct, products.length)} of {products.length} results
+            </div>
             <div className="flex space-x-2">
-              <button className="px-3 py-1 border rounded">Previous</button>
-              <button className="px-3 py-1 border rounded bg-[#1C573E] text-white">1</button>
-              <button className="px-3 py-1 border rounded">2</button>
-              <button className="px-3 py-1 border rounded">3</button>
-              <button className="px-3 py-1 border rounded">Next</button>
+              <button
+                onClick={() => paginateProducts(currentProductsPage - 1)}
+                disabled={currentProductsPage === 1}
+                className={`px-3 py-1 border rounded ${currentProductsPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                Previous
+              </button>
+
+              {Array.from({ length: Math.min(3, totalProductPages) }, (_, i) => {
+                const pageNumber = i + 1;
+                return (
+                  <button
+                    key={pageNumber}
+                    onClick={() => paginateProducts(pageNumber)}
+                    className={`px-3 py-1 border rounded ${currentProductsPage === pageNumber ? 'bg-[#1C573E] text-white' : ''}`}
+                  >
+                    {pageNumber}
+                  </button>
+                );
+              })}
+
+              {totalProductPages > 3 && (
+                <span className="px-3 py-1">...</span>
+              )}
+
+              <button
+                onClick={() => paginateProducts(currentProductsPage + 1)}
+                disabled={currentProductsPage === totalProductPages}
+                className={`px-3 py-1 border rounded ${currentProductsPage === totalProductPages ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                Next
+              </button>
             </div>
           </div>
         </div>
@@ -186,12 +240,12 @@ const ProductOrderManagement = () => {
       {/* Orders Section */}
       <div>
         <div className="flex justify-between items-center mt-10 bg-[#fff] p-4">
-          <h2 className="text-xl font-semibold font-poppins text-[20px] text-[#111827] ">Orders</h2>
+          <h2 className="text-xl font-semibold font-poppins text-[20px] text-[#111827]">Orders</h2>
           <div className="flex items-center gap-4">
             <div className="relative">
               <input
                 type="text"
-                placeholder="search products..."
+                placeholder="search orders..."
                 className="pl-8 pr-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
               <svg
@@ -208,7 +262,7 @@ const ProductOrderManagement = () => {
               </svg>
             </div>
             <div className="flex items-center border py-2 px-4 rounded">
-              <span className="text-sm mr-2 ">All Products</span>
+              <span className="text-sm mr-2">All Orders</span>
               <svg
                 className="h-4 w-4 text-gray-400"
                 xmlns="http://www.w3.org/2000/svg"
@@ -262,19 +316,19 @@ const ProductOrderManagement = () => {
             <div>Showing {indexOfFirstOrder + 1} to {Math.min(indexOfLastOrder, orders.length)} of {orders.length} results</div>
             <div className="flex space-x-2">
               <button
-                onClick={() => paginate(currentPage - 1)}
+                onClick={() => paginateOrders(currentPage - 1)}
                 disabled={currentPage === 1}
                 className={`px-3 py-1 border rounded ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 Previous
               </button>
 
-              {Array.from({ length: Math.min(3, totalPages) }, (_, i) => {
+              {Array.from({ length: Math.min(3, totalOrderPages) }, (_, i) => {
                 const pageNumber = i + 1;
                 return (
                   <button
                     key={pageNumber}
-                    onClick={() => paginate(pageNumber)}
+                    onClick={() => paginateOrders(pageNumber)}
                     className={`px-3 py-1 border rounded ${currentPage === pageNumber ? 'bg-[#1C573E] text-white' : ''}`}
                   >
                     {pageNumber}
@@ -282,14 +336,14 @@ const ProductOrderManagement = () => {
                 );
               })}
 
-              {totalPages > 3 && (
+              {totalOrderPages > 3 && (
                 <span className="px-3 py-1">...</span>
               )}
 
               <button
-                onClick={() => paginate(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className={`px-3 py-1 border rounded ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}`}
+                onClick={() => paginateOrders(currentPage + 1)}
+                disabled={currentPage === totalOrderPages}
+                className={`px-3 py-1 border rounded ${currentPage === totalOrderPages ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 Next
               </button>

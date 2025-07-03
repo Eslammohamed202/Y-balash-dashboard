@@ -47,7 +47,7 @@ export default function UserManagement() {
 
       <div className="flex gap-4 border-b mb-4">
         <button className={`pb-2 font-semibold ${tab === 'users' ? 'border-b-2 border-[#1C573E]' : 'text-gray-600'}`} onClick={() => setTab('users')}>Users</button>
-        <button className={`pb-2 font-semibold ${tab === 'sellers' ? 'border-b-2 border-red-500 text-red-600' : 'text-gray-600'}`} onClick={() => setTab('sellers')}>Sellers</button>
+        <button className={`pb-2 font-semibold ${tab === 'sellers' ? 'border-b-2 border-[#1C573E] ' : 'text-gray-600'}`} onClick={() => setTab('sellers')}>Sellers</button>
       </div>
 
       <div className="flex justify-between items-center mt-4 mb-2">
