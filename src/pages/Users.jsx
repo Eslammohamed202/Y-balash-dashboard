@@ -70,7 +70,7 @@ export default function UserManagement() {
         {(tab === 'users' ? filteredUsers : filteredSellers).slice(0, 10).map((item) => (
           <div key={item._id || item.id} className="grid grid-cols-5 items-center py-3 border-b text-sm">
             <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/Cards')}>
-              <img src={item.managedRestaurant?.imageUrl || "https://i.pravatar.cc/40"} alt="Avatar" className="w-8 h-8 rounded-full object-cover" />
+              {/* <img src={item.managedRestaurant?.imageUrl || "https://i.pravatar.cc/40"} alt="Avatar" className="w-8 h-8 rounded-full object-cover" /> */}
               <span className="text-gray-800 font-medium">{tab === 'users' ? `#${item.id?.slice(-5)}` : (item.managedRestaurant?.name || 'Unnamed')}</span>
             </div>
             <span>{item.email}</span>
@@ -84,7 +84,7 @@ export default function UserManagement() {
           </div>
         ))}
 
-        <div className="flex justify-between items-center pt-4 text-sm text-gray-500">
+        {/* <div className="flex justify-between items-center pt-4 text-sm text-gray-500">
           <p>Showing 1 to 10 of {(tab === 'users' ? users.length : sellers.length)} entries</p>
           <div className="space-x-1">
             <button className="border px-2 py-1 rounded">Previous</button>
@@ -92,7 +92,7 @@ export default function UserManagement() {
             <button className="border px-2 py-1 rounded">2</button>
             <button className="border px-2 py-1 rounded">Next</button>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

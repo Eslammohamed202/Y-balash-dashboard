@@ -406,11 +406,11 @@ const DashboardStats = () => {
             </svg>
             <span>{welcomeData?.date || ""}</span>
           </div>
-          <img
+          {/* <img
             src="https://i.pravatar.cc/40"
             alt="Admin Avatar"
             className="w-8 h-8 rounded-full object-cover"
-          />
+          /> */}
         </div>
       </div>
 
