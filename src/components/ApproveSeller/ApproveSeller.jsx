@@ -6,9 +6,10 @@ const ApproveSeller = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    restaurantId: '',
+    restaurantName: '',
     name: '',
     phone: '',
+    additionalNotes: ''
   });
 
   const [loading, setLoading] = useState(false);
@@ -29,22 +30,23 @@ const ApproveSeller = () => {
     setError(null);
 
     try {
-      // const res = await axios.post('https://y-balash.vercel.app/api/admin/approve-seller', formData);
       const res = await axios.post('https://y-balash.vercel.app/api/admin/approve-seller', formData);
+      
       if (res.data.success) {
         setMessage(res.data.message);
         setFormData({
           email: '',
           password: '',
-          restaurantId: '',
+          restaurantName: '',
           name: '',
           phone: '',
+          additionalNotes: ''
         });
       } else {
-        setError(res.data.message);
+        setError(res.data.message || 'Failed to approve seller');
       }
     } catch (err) {
-      setError('Something went wrong. Please try again.');
+      setError(err.response?.data?.message || 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -78,9 +80,9 @@ const ApproveSeller = () => {
         />
         <input
           type="text"
-          name="restaurantId"
-          placeholder="Restaurant ID"
-          value={formData.restaurantId}
+          name="restaurantName"
+          placeholder="Restaurant Name"
+          value={formData.restaurantName}
           onChange={handleChange}
           className="w-full p-2 border rounded"
           required
@@ -88,7 +90,7 @@ const ApproveSeller = () => {
         <input
           type="text"
           name="name"
-          placeholder="Restaurant Name"
+          placeholder="Seller Name"
           value={formData.name}
           onChange={handleChange}
           className="w-full p-2 border rounded"
@@ -103,7 +105,14 @@ const ApproveSeller = () => {
           className="w-full p-2 border rounded"
           required
         />
-
+        <textarea
+          name="additionalNotes"
+          placeholder="Additional Notes"
+          value={formData.additionalNotes}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+          rows="3"
+        />
 
         <button
           type="submit"
@@ -113,8 +122,19 @@ const ApproveSeller = () => {
           {loading ? 'Approving...' : 'Approve Seller'}
         </button>
 
-        {message && <p className="text-green-600 font-medium text-sm mt-2">{message}</p>}
-        {error && <p className="text-red-600 font-medium text-sm mt-2">{error}</p>}
+        {message && (
+          <div className="p-3 bg-green-100 text-green-700 rounded mt-3">
+            <p className="font-medium">{message}</p>
+            {formData.email && (
+              <p className="text-sm mt-1">Seller Email: {formData.email}</p>
+            )}
+          </div>
+        )}
+        {error && (
+          <div className="p-3 bg-red-100 text-red-700 rounded mt-3">
+            <p className="font-medium">{error}</p>
+          </div>
+        )}
       </form>
     </div>
   );
